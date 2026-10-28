@@ -183,6 +183,7 @@ document.getElementById('nb-tema').onclick = () => document.documentElement.clas
   const MODELOS = ['Presencial', 'Híbrido', 'Home Office', 'Tanto faz'];
   const RACA = ['Amarela', 'Branca', 'Indígena', 'Parda', 'Preta', 'Prefiro não informar'];
   const GENERO = ['Mulher cisgênero', 'Homem cisgênero', 'Mulher trans / travesti', 'Homem trans', 'Pessoa não binária', 'Outra identidade', 'Prefiro não informar'];
+  const PCD = ['Sim', 'Não', 'Prefiro não informar'];
   const ORIENT = ['Assexual', 'Bissexual', 'Gay', 'Heterossexual', 'Lésbica', 'Pansexual', 'Outra orientação', 'Prefiro não informar'];
   const MAX_CV = 3500; // caracteres do texto do currículo que vão no código (o arquivo completo vai anexo)
 
@@ -236,11 +237,13 @@ document.getElementById('nb-tema').onclick = () => document.documentElement.clas
         <label class="nc-arq ${F.arquivo ? 'ok' : ''}" style="margin-top:6px"><input type="file" id="nc-cv" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><span class="nc-btn claro" aria-hidden="true">Escolher currículo</span><span class="nc-arq-nome" id="nc-cv-nome">${F.arquivo ? esc(F.arquivo.name) + (F.lendo ? ' · lendo…' : ' ✓') : 'Nenhum arquivo escolhido'}</span></label>${er('cv')}</div>
       <label class="cheio ${cls('resumo')}">Resumo da sua experiência *<small>Conte em poucas linhas a sua trajetória, principais atividades e resultados (até 1.000 caracteres).</small><textarea name="resumo" maxlength="1000">${val('resumo')}</textarea>${er('resumo')}</label>
       <fieldset class="nc-diver"><legend>Autodeclaração (opcional)</legend>
-        <p>A Netza&amp;CO acompanha a diversidade dos seus processos. Estas respostas são <b>opcionais</b>, usadas só em números agregados e separadas do seu cadastro na nossa base. Elas <b>não são vistas por quem avalia</b> o seu perfil. Você pode deixar em branco ou escolher “Prefiro não informar”.</p>
+        <p>Estas respostas são <b>opcionais</b>. Você pode deixar em branco ou escolher “Prefiro não informar”. Elas servem para duas coisas, e você escolhe abaixo o que autoriza: acompanhar a diversidade dos nossos processos (só em números agregados) e, se quiser, concorrer às <b>vagas afirmativas</b> da Netza&amp;CO.</p>
         <label>Raça/cor<select name="raca"><option value="">—</option>${opcoes(RACA, F.raca)}</select></label>
         <label>Identidade de gênero<select name="genero"><option value="">—</option>${opcoes(GENERO, F.genero)}</select></label>
         <label>Orientação sexual<select name="orientacao"><option value="">—</option>${opcoes(ORIENT, F.orientacao)}</select></label>
+        <label>Pessoa com deficiência (PcD)<select name="pcd"><option value="">—</option>${opcoes(PCD, F.pcd)}</select></label>
         <label class="nc-check cheio ${cls('cons_diver')}" style="grid-column:1/-1"><input type="checkbox" name="cons_diver" ${F.cons_diver ? 'checked' : ''}><span>Autorizo a Netza&amp;CO a tratar estas informações, de forma agregada e sem vínculo com o meu cadastro, para acompanhar a diversidade dos processos seletivos (LGPD, art. 11). <small>(necessário só se você responder acima)</small>${er('cons_diver')}</span></label>
+        <label class="nc-check cheio" style="grid-column:1/-1"><input type="checkbox" name="cons_afirm" ${F.cons_afirm ? 'checked' : ''}><span><b>Quero concorrer a vagas afirmativas.</b> Autorizo que minha autodeclaração fique no meu cadastro e seja vista pela equipe de Recrutamento e Seleção da Netza&amp;CO, só para me considerar em vagas afirmativas (LGPD, art. 11, I). Posso retirar essa autorização quando quiser. <small>(opcional)</small></span></label>
       </fieldset>
       <label class="nc-check cheio ${cls('cons')}"><input type="checkbox" name="cons" ${F.cons ? 'checked' : ''}><span>Li e concordo com a <a href="${esc(C.privacidade)}" target="_blank" rel="noopener">Política de Privacidade</a> e autorizo a Netza&amp;CO a guardar meus dados no Banco de Talentos para processos seletivos, por até 24 meses. *${er('cons')}</span></label>
       <details class="nb-priv cheio"><summary>Como cuidamos dos seus dados (LGPD)</summary>
@@ -249,7 +252,7 @@ document.getElementById('nb-tema').onclick = () => document.documentElement.clas
           <li><b>Para quê:</b> avaliar o seu perfil e entrar em contato sobre oportunidades. Não vendemos nem cedemos seus dados.</li>
           <li><b>Base legal:</b> o seu consentimento (LGPD, art. 7º, I). A autodeclaração é opcional e tem consentimento próprio (art. 11, I).</li>
           <li><b>Segurança:</b> esta página não guarda nada. O currículo é lido no seu próprio aparelho, e o cadastro sai criptografado: só a equipe de Recrutamento da Netza&amp;CO consegue abrir.</li>
-          <li><b>Quem acessa:</b> só a equipe de Recrutamento e Seleção. A autodeclaração fica separada do cadastro e entra só em números agregados.</li>
+          <li><b>Quem acessa:</b> só a equipe de Recrutamento e Seleção. A autodeclaração entra em números agregados e só fica no seu cadastro se você escolher concorrer a vagas afirmativas.</li>
           <li><b>Por quanto tempo:</b> até 24 meses, ou até você pedir a exclusão.</li>
           <li><b>Seus direitos:</b> confirmar, acessar, corrigir, excluir os seus dados ou retirar o consentimento a qualquer momento (art. 18). Basta escrever para <a href="mailto:${esc(C.email)}?subject=${encodeURIComponent('LGPD · Banco de Talentos')}">${esc(C.email)}</a>.</li>
         </ul></details>
@@ -258,7 +261,7 @@ document.getElementById('nb-tema').onclick = () => document.documentElement.clas
     </form></section></div>`;
     ligar();
   }
-  function ler() { const f = $('#nc-f'); if (!f) return; new FormData(f).forEach((x, k) => (F[k] = x)); F.cons = f.cons.checked; F.cons_diver = f.cons_diver.checked; }
+  function ler() { const f = $('#nc-f'); if (!f) return; new FormData(f).forEach((x, k) => (F[k] = x)); F.cons = f.cons.checked; F.cons_diver = f.cons_diver.checked; F.cons_afirm = f.cons_afirm.checked; }
   function ligar() {
     const f = $('#nc-f');
     f.pretensao.onblur = () => (f.pretensao.value = moeda(f.pretensao.value));
@@ -285,7 +288,7 @@ document.getElementById('nb-tema').onclick = () => document.documentElement.clas
     if (!moeda(F.pretensao)) E.pretensao = 'Informe a sua pretensão.';
     if (!F.arquivo) E.cv = 'Escolha o seu currículo.';
     if (String(F.resumo || '').trim().length < 40) E.resumo = 'Escreva um resumo com pelo menos algumas linhas.';
-    if ((F.raca || F.genero || F.orientacao) && !F.cons_diver) E.cons_diver = 'Marque a autorização ou deixe a autodeclaração em branco.';
+    if ((F.raca || F.genero || F.orientacao || F.pcd) && !F.cons_diver && !F.cons_afirm) E.cons_diver = 'Marque a autorização ou deixe a autodeclaração em branco.';
     if (!F.cons) E.cons = 'É preciso concordar para continuar.';
     F.erros = E; F.erroGeral = Object.keys(E).length ? 'Confira os campos destacados.' : '';
     return !Object.keys(E).length;
@@ -294,7 +297,9 @@ document.getElementById('nb-tema').onclick = () => document.documentElement.clas
     if (F.lendo) await new Promise((r) => { const t = setInterval(() => { if (!F.lendo) { clearInterval(t); r(); } }, 200); });
     const d = { v: 1, em: new Date().toISOString(), nome: F.nome.trim(), email: F.email.trim(), celular: `${F.ddi} ${F.celular.trim()}`, linkedin: F.linkedin.trim(), area: F.area, cargo: F.cargo.trim(),
       regime: F.regime, modelo: F.modelo, local: F.local.trim(), pretensao: moeda(F.pretensao), resumo: F.resumo.trim(), cv_nome: F.arquivo.name, cv_texto: String(F.cv_texto || '').replace(/[ \t]+/g, ' ').slice(0, MAX_CV), cons: 1 };
-    if (F.cons_diver && (F.raca || F.genero || F.orientacao)) d.censo = { raca: F.raca || '', genero: F.genero || '', orientacao: F.orientacao || '' };
+    const auto = { raca: F.raca || '', genero: F.genero || '', orientacao: F.orientacao || '', pcd: F.pcd || '' };
+    if (F.cons_diver && (auto.raca || auto.genero || auto.orientacao || auto.pcd)) d.censo = auto;
+    if (F.cons_afirm && (auto.raca || auto.genero || auto.orientacao || auto.pcd)) d.afirmativa = { ...auto, consentimento: new Date().toISOString() };
     try { pronto = { d, codigo: await codificar(d) }; }
     catch (e) { F.erroGeral = 'Seu navegador não conseguiu proteger os dados do cadastro. Atualize o navegador (Chrome, Safari ou Edge) e tente de novo.'; return refazer(); }
     F.cv_texto = ''; // o texto do currículo só fica no código criptografado
